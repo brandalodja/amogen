@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote Generator Pro - Text to Canvas</title>
+    <title>Aksara - Quote Generator from AMOGENZ</title>
     
-    <!-- Google Fonts: Latin & Arabic -->
+    <!-- Google Fonts: Latin, Display & Arabic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;900&family=Inter:wght@300;400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Cairo:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.85);
-            --border-color: rgba(255, 255, 255, 0.12);
-            --accent-color: #38bdf8;
-            --accent-hover: #0284c7;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-color: #090909;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-hover: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-color: #39FF14; /* Energy Green AMOGENZ */
+            --accent-hover: #32E60F;
+            --accent-active: #2AC40A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #E8E8E8;
+            --text-tertiary: #888888;
+            --text-dark: #000000;
         }
 
         * {
@@ -30,31 +34,42 @@
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-main);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
+            padding: 20px 15px;
         }
 
+        /* Header Styling */
         header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
 
-        header h1 {
-            font-size: 1.6rem;
+        .brand-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            letter-spacing: 3px;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .badge-amogenz {
+            background: rgba(57, 255, 20, 0.12);
+            color: var(--accent-color);
+            font-size: 11px;
             font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-top: 2px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(57, 255, 20, 0.24);
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .main-container {
@@ -65,62 +80,58 @@
             max-width: 1100px;
         }
 
-        /* ------------------------------------
-           Sticky Preview Section (Anti Ketutup)
-        ------------------------------------ */
+        /* Sticky Preview Section */
         .preview-section {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* STICKY AGAR SELALU KELIHATAN SAAT EDIT */
             position: sticky;
             top: 10px;
             z-index: 100;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         .preview-wrapper {
             width: 100%;
-            max-width: 260px; /* Ukuran Compact di HP */
+            max-width: 250px;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
             
-            /* Pola Catur untuk Background Transparan */
-            background-color: #1e293b;
+            /* Checkerboard Pattern */
+            background-color: #121212;
             background-image: 
-                linear-gradient(45deg, #0f172a 25%, transparent 25%),
-                linear-gradient(-45deg, #0f172a 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #0f172a 75%),
-                linear-gradient(-45deg, transparent 75%, #0f172a 75%);
+                linear-gradient(45deg, #090909 25%, transparent 25%),
+                linear-gradient(-45deg, #090909 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #090909 75%),
+                linear-gradient(-45deg, transparent 75%, #090909 75%);
             background-size: 16px 16px;
             background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
         }
 
         #previewImage {
-            max-height: 220px; /* Tidak makan tempat di HP */
+            max-height: 220px;
             width: auto;
             max-width: 100%;
             display: block;
             object-fit: contain;
         }
 
-        /* Desktop Layout (Grid Side by Side) */
         @media (min-width: 850px) {
             .main-container {
                 display: grid;
-                grid-template-columns: 360px 1fr;
+                grid-template-columns: 350px 1fr;
                 align-items: start;
-                gap: 25px;
+                gap: 24px;
             }
 
             .preview-section {
@@ -133,21 +144,20 @@
             }
 
             #previewImage {
-                max-height: 480px;
+                max-height: 460px;
             }
 
-            header h1 {
-                font-size: 2rem;
+            .brand-title {
+                font-size: 3.5rem;
             }
         }
 
         /* Controls Section */
         .controls-section {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 18px;
@@ -160,11 +170,11 @@
         }
 
         .control-group label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
 
         .row-2 {
@@ -175,29 +185,29 @@
 
         textarea {
             width: 100%;
-            height: 90px;
-            background: rgba(15, 23, 42, 0.7);
+            height: 95px;
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px;
-            color: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            color: var(--text-primary);
             font-size: 0.95rem;
             resize: vertical;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        textarea:focus, select:focus, input:focus {
+        textarea:focus, select:focus, input[type="text"]:focus {
             border-color: var(--accent-color);
         }
 
         select, input[type="text"] {
             width: 100%;
-            padding: 9px 12px;
-            background: rgba(15, 23, 42, 0.7);
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
+            border-radius: 6px;
+            color: var(--text-primary);
             font-size: 0.88rem;
             outline: none;
         }
@@ -213,58 +223,68 @@
             border: none;
             width: 38px;
             height: 38px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             background: none;
         }
 
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-color); border-radius: 8px; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-color); border-radius: 6px; }
 
         input[type="range"] {
             accent-color: var(--accent-color);
             cursor: pointer;
         }
 
-        .btn {
-            padding: 12px 20px;
-            font-size: 0.95rem;
-            font-weight: 600;
+        /* Buttons Styling (AMOGENZ Design Rules) */
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--text-dark);
+            font-family: 'Bebas Neue', 'Inter', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            height: 45px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-color), #0284c7);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 5px;
         }
 
         .btn-primary:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:active {
+            background: var(--accent-active);
+            transform: scale(0.99);
         }
 
         .file-upload-btn {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px dashed var(--border-color);
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
             cursor: pointer;
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
 
         .file-upload-btn:hover {
             border-color: var(--accent-color);
-            color: #fff;
+            color: var(--text-primary);
+            background: var(--card-hover);
         }
 
         canvas { display: none; }
@@ -273,12 +293,12 @@
 <body>
 
     <header>
-        <h1>Quote Generator Studio</h1>
-        <p>Buat Gambar Kutipan Aesthetic, Arab, & Transparan</p>
+        <h1 class="brand-title">AKSARA</h1>
+        <span class="badge-amogenz">from AMOGENZ</span>
     </header>
 
     <div class="main-container">
-        <!-- Area Pratinjau Gambar (STICKY TOP) -->
+        <!-- Area Pratinjau Gambar -->
         <div class="preview-section">
             <div class="preview-wrapper">
                 <img id="previewImage" alt="Pratinjau Kutipan">
@@ -338,64 +358,73 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="fontSize">Ukuran Font (<span id="fontSizeVal">52</span>px)</label>
-                    <input type="range" id="fontSize" min="20" max="120" value="52">
+                    <label for="fontSize">Ukuran Font (<span id="fontSizeVal">65</span>px)</label>
+                    <input type="range" id="fontSize" min="20" max="150" value="65">
                 </div>
             </div>
 
-            <!-- Line Height & Warna Teks -->
+            <!-- Margin Samping & Jarak Baris -->
             <div class="row-2">
+                <div class="control-group">
+                    <label for="textMargin">Margin Samping (<span id="textMarginVal">5</span>%)</label>
+                    <input type="range" id="textMargin" min="2" max="30" value="5">
+                </div>
+
                 <div class="control-group">
                     <label for="lineHeight">Jarak Baris (<span id="lineHeightVal">1.4</span>)</label>
                     <input type="range" id="lineHeight" min="1.0" max="2.2" step="0.1" value="1.4">
                 </div>
+            </div>
 
+            <!-- Warna Teks & Background -->
+            <div class="row-2">
                 <div class="control-group">
                     <label for="textColor">Warna Teks</label>
                     <div class="color-inputs">
                         <input type="color" id="textColor" value="#ffffff">
-                        <input type="text" id="textColorHex" value="#ffffff" style="text-transform: uppercase;">
+                        <input type="text" id="textColorHex" value="#FFFFFF" style="text-transform: uppercase;">
                     </div>
                 </div>
-            </div>
 
-            <!-- Pengaturan Background -->
-            <div class="control-group">
-                <label for="bgType">Tipe Background</label>
-                <select id="bgType">
-                    <option value="solid">Warna Solid</option>
-                    <option value="gradient">Gradien Dua Warna</option>
-                    <option value="image">Upload Gambar Latar</option>
-                    <option value="transparent" selected>Transparan (Tanpa Background)</option>
-                </select>
+                <div class="control-group">
+                    <label for="bgType">Tipe Background</label>
+                    <select id="bgType">
+                        <option value="transparent" selected>Transparan (Tanpa Background)</option>
+                        <option value="solid">Warna Solid</option>
+                        <option value="gradient">Gradien Dua Warna</option>
+                        <option value="image">Upload Gambar Latar</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Controls Dinamis Background Warna -->
             <div id="bgColorControls" class="row-2" style="display: none;">
                 <div class="control-group">
                     <label for="bgColor1">Warna Utama</label>
-                    <input type="color" id="bgColor1" value="#050505">
+                    <input type="color" id="bgColor1" value="#090909">
                 </div>
                 <div class="control-group" id="bgColor2Group" style="display: none;">
                     <label for="bgColor2">Warna Gradien Kedua</label>
-                    <input type="color" id="bgColor2" value="#1e293b">
+                    <input type="color" id="bgColor2" value="#1c1c1c">
                 </div>
             </div>
 
-            <!-- Controls Upload Gambar -->
+            <!-- Controls Upload Gambar (Vector SVG Icon) -->
             <div id="bgImageControls" class="control-group" style="display: none;">
                 <label>Pilih Gambar Latar</label>
                 <label class="file-upload-btn">
-                    📁 Klik untuk upload gambar
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span>Klik untuk upload gambar</span>
                     <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
                 </label>
                 <label for="overlayOpacity" style="margin-top: 8px;">Kegelapan Overlay (<span id="overlayVal">40</span>%)</label>
                 <input type="range" id="overlayOpacity" min="0" max="90" value="40">
             </div>
 
-            <!-- Tombol Download -->
-            <button class="btn btn-primary" id="downloadBtn" onclick="downloadImage()">
-                💾 Download PNG (Kualitas Tinggi)
+            <!-- Tombol Download (Vector SVG Icon) -->
+            <button class="btn-primary" id="downloadBtn" onclick="downloadImage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>DOWNLOAD PNG</span>
             </button>
 
         </div>
@@ -416,6 +445,8 @@
         const textAlignSelect = document.getElementById('textAlign');
         const fontSizeInput = document.getElementById('fontSize');
         const fontSizeVal = document.getElementById('fontSizeVal');
+        const textMarginInput = document.getElementById('textMargin');
+        const textMarginVal = document.getElementById('textMarginVal');
         const lineHeightInput = document.getElementById('lineHeight');
         const lineHeightVal = document.getElementById('lineHeightVal');
         const textColorInput = document.getElementById('textColor');
@@ -479,6 +510,7 @@
                     const word = words[i];
                     const testLine = currentLine ? currentLine + ' ' + word : word;
                     const metrics = context.measureText(testLine);
+                    
                     if (metrics.width > maxWidth && currentLine !== '') {
                         lines.push(currentLine);
                         currentLine = word;
@@ -498,10 +530,10 @@
         function renderCanvas() {
             updateCanvasDimensions();
             
-            // Clear canvas (Membuatnya transparan secara alami)
+            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Draw Background (Solid, Gradient, Image, atau Transparan)
+            // 1. Draw Background
             const bgType = bgTypeSelect.value;
             if (bgType === 'solid') {
                 ctx.fillStyle = bgColor1Input.value;
@@ -535,7 +567,6 @@
                 ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-            // Note: Jika 'transparent', canvas dibiarkan kosong tanpa fillRect!
 
             // 2. Draw Text
             const rawText = textInput.value || 'Tulis kata-katamu...';
@@ -544,6 +575,11 @@
             const align = textAlignSelect.value;
             const lHeightRatio = parseFloat(lineHeightInput.value);
 
+            // Perhitungan Dynamic Padding/Margin
+            const marginPercent = parseInt(textMarginInput.value, 10) / 100;
+            const padding = canvas.width * marginPercent;
+            const maxWidth = canvas.width - (padding * 2);
+
             ctx.fillStyle = textColorInput.value;
             ctx.font = `bold ${fontSize}px ${selectedFont}`;
             
@@ -551,12 +587,12 @@
             const hasArabic = isArabic(rawText);
             ctx.direction = hasArabic ? 'rtl' : 'ltr';
 
-            // Alignment Positioning
+            // Alignment Positioning (Sync dengan Margin)
             let textX = canvas.width / 2;
             if (align === 'left') {
-                textX = canvas.width * 0.1;
+                textX = padding;
             } else if (align === 'right') {
-                textX = canvas.width * 0.9;
+                textX = canvas.width - padding;
             }
             ctx.textAlign = align;
             ctx.textBaseline = 'middle';
@@ -568,8 +604,6 @@
             ctx.shadowOffsetY = 4;
 
             // Wrap Text Calculation
-            const padding = canvas.width * 0.15;
-            const maxWidth = canvas.width - (padding * 2);
             const lines = getWrappedLines(ctx, rawText, maxWidth);
 
             const lineHeightPx = fontSize * lHeightRatio;
@@ -588,7 +622,7 @@
         }
 
         // Debounce Helper
-        function debounce(func, delay = 100) {
+        function debounce(func, delay = 80) {
             let timeout;
             return (...args) => {
                 clearTimeout(timeout);
@@ -596,7 +630,7 @@
             };
         }
 
-        const debouncedRender = debounce(renderCanvas, 80);
+        const debouncedRender = debounce(renderCanvas, 60);
 
         // Event Listeners
         textInput.addEventListener('input', debouncedRender);
@@ -610,6 +644,11 @@
         
         fontSizeInput.addEventListener('input', (e) => {
             fontSizeVal.textContent = e.target.value;
+            debouncedRender();
+        });
+
+        textMarginInput.addEventListener('input', (e) => {
+            textMarginVal.textContent = e.target.value;
             debouncedRender();
         });
 
@@ -662,16 +701,16 @@
             debouncedRender();
         });
 
-        // Download Image Function
+        // Download Image Function (Saved as Aksara [amogenz].png)
         function downloadImage() {
             const link = document.createElement('a');
             const timeStamp = new Date().getTime();
-            link.download = `Quote_${timeStamp}.png`;
+            link.download = `Aksara_[amogenz]_${timeStamp}.png`;
             link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         }
 
-        // Initialize App & Wait for Fonts
+        // Initialize App
         document.fonts.ready.then(() => {
             renderCanvas();
         });
