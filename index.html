@@ -3,150 +3,678 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Teks dan Konversi ke Gambar</title>
+    <title>Quote Generator Pro - Text to Canvas</title>
+    
+    <!-- Google Fonts: Latin & Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;900&family=Inter:wght@300;400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,600;1,400&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #000000;
-            color: white;
-            margin: 0;
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        .input-container {
-            max-width: 90%;
-            margin: 0 auto;
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+
+        header {
             text-align: center;
-            width: 500px;
+            margin-bottom: 15px;
         }
-        .text-box {
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             width: 100%;
-            height: 150px;
-            font-family: sans-serif;
-            font-weight: normal;
-            font-size: 16px;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            background-color: #222222;
-            color: white;
-            margin-top: 20px;
-            resize: none;
+            max-width: 1100px;
         }
-        #fontSizeSlider {
-            margin-top: 10px;
+
+        /* ------------------------------------
+           Sticky Preview Section (Anti Ketutup)
+        ------------------------------------ */
+        .preview-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* STICKY AGAR SELALU KELIHATAN SAAT EDIT */
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-wrapper {
             width: 100%;
+            max-width: 260px; /* Ukuran Compact di HP */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+            
+            /* Pola Catur untuk Background Transparan */
+            background-color: #1e293b;
+            background-image: 
+                linear-gradient(45deg, #0f172a 25%, transparent 25%),
+                linear-gradient(-45deg, #0f172a 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #0f172a 75%),
+                linear-gradient(-45deg, transparent 75%, #0f172a 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
         }
-        #downloadButton {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        #downloadButton:hover {
-            background-color: #45a049;
-        }
-        #preview {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            width: 100%;
+
+        #previewImage {
+            max-height: 220px; /* Tidak makan tempat di HP */
+            width: auto;
+            max-width: 100%;
             display: block;
-            margin-bottom: 10px;
+            object-fit: contain;
         }
-        canvas {
-            display: none;
-        }
-        @media screen and (max-width: 600px) {
-            .text-box {
-                font-size: 14px;
-                height: 120px;
+
+        /* Desktop Layout (Grid Side by Side) */
+        @media (min-width: 850px) {
+            .main-container {
+                display: grid;
+                grid-template-columns: 360px 1fr;
+                align-items: start;
+                gap: 25px;
             }
-            #downloadButton {
-                font-size: 14px;
+
+            .preview-section {
+                top: 20px;
+                padding: 20px;
+            }
+
+            .preview-wrapper {
+                max-width: 100%;
+            }
+
+            #previewImage {
+                max-height: 480px;
+            }
+
+            header h1 {
+                font-size: 2rem;
             }
         }
+
+        /* Controls Section */
+        .controls-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 90px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus, select:focus, input:focus {
+            border-color: var(--accent-color);
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 9px 12px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        .color-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-color); border-radius: 8px; }
+
+        input[type="range"] {
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #0284c7);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .file-upload-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+
+        canvas { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="input-container">
-        <img id="preview" alt="Pratinjau Gambar">
-        <input type="range" id="fontSizeSlider" min="27" max="150" value="57" oninput="debouncedGenerateImage()">
-        <textarea class="text-box" id="textInput" placeholder="Tulis kata-katamu di sini..." oninput="debouncedGenerateImage()"></textarea>
-        <button id="downloadButton" onclick="downloadImage()">Download PNG</button>
+    <header>
+        <h1>Quote Generator Studio</h1>
+        <p>Buat Gambar Kutipan Aesthetic, Arab, & Transparan</p>
+    </header>
+
+    <div class="main-container">
+        <!-- Area Pratinjau Gambar (STICKY TOP) -->
+        <div class="preview-section">
+            <div class="preview-wrapper">
+                <img id="previewImage" alt="Pratinjau Kutipan">
+            </div>
+        </div>
+
+        <!-- Panel Kontrol -->
+        <div class="controls-section">
+            
+            <!-- Input Teks -->
+            <div class="control-group">
+                <label for="textInput">Teks Kutipan</label>
+                <textarea id="textInput" placeholder="Tulis kata-katamu di sini... (Mendukung Teks Indonesia & Arab/العربية)">لا تُفَكِّرْ فِي المَفْقُودِ حَتَّى لا تَفْقِدَ المَوْجُودَ</textarea>
+            </div>
+
+            <!-- Aspect Ratio & Font -->
+            <div class="row-2">
+                <div class="control-group">
+                    <label for="aspectRatio">Ukuran Canvas</label>
+                    <select id="aspectRatio">
+                        <option value="9:16" selected>Story / TikTok (9:16)</option>
+                        <option value="4:5">Feed IG (4:5)</option>
+                        <option value="1:1">Persegi (1:1)</option>
+                        <option value="16:9">Landscape (16:9)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSelect">Jenis Font</label>
+                    <select id="fontSelect">
+                        <!-- Arabic Fonts -->
+                        <optgroup label="Font Arab (العربية)">
+                            <option value="'Cairo', sans-serif" selected>Cairo (Modern Arab)</option>
+                            <option value="'Amiri', serif">Amiri (Klasik/Naskh)</option>
+                            <option value="'Tajawal', sans-serif">Tajawal (Minimalis)</option>
+                            <option value="'Reem Kufi', sans-serif">Reem Kufi (Kufi Aesthetic)</option>
+                        </optgroup>
+                        <!-- Latin Fonts -->
+                        <optgroup label="Font Latin / Umum">
+                            <option value="'Inter', sans-serif">Inter (Clean Modern)</option>
+                            <option value="'Montserrat', sans-serif">Montserrat (Bold Modern)</option>
+                            <option value="'Playfair Display', serif">Playfair (Aesthetic Serif)</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Alignment & Ukuran Font -->
+            <div class="row-2">
+                <div class="control-group">
+                    <label for="textAlign">Rata Teks</label>
+                    <select id="textAlign">
+                        <option value="center" selected>Tengah (Center)</option>
+                        <option value="right">Kanan (Right / Arab)</option>
+                        <option value="left">Kiri (Left)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSize">Ukuran Font (<span id="fontSizeVal">52</span>px)</label>
+                    <input type="range" id="fontSize" min="20" max="120" value="52">
+                </div>
+            </div>
+
+            <!-- Line Height & Warna Teks -->
+            <div class="row-2">
+                <div class="control-group">
+                    <label for="lineHeight">Jarak Baris (<span id="lineHeightVal">1.4</span>)</label>
+                    <input type="range" id="lineHeight" min="1.0" max="2.2" step="0.1" value="1.4">
+                </div>
+
+                <div class="control-group">
+                    <label for="textColor">Warna Teks</label>
+                    <div class="color-inputs">
+                        <input type="color" id="textColor" value="#ffffff">
+                        <input type="text" id="textColorHex" value="#ffffff" style="text-transform: uppercase;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pengaturan Background -->
+            <div class="control-group">
+                <label for="bgType">Tipe Background</label>
+                <select id="bgType">
+                    <option value="solid">Warna Solid</option>
+                    <option value="gradient">Gradien Dua Warna</option>
+                    <option value="image">Upload Gambar Latar</option>
+                    <option value="transparent" selected>Transparan (Tanpa Background)</option>
+                </select>
+            </div>
+
+            <!-- Controls Dinamis Background Warna -->
+            <div id="bgColorControls" class="row-2" style="display: none;">
+                <div class="control-group">
+                    <label for="bgColor1">Warna Utama</label>
+                    <input type="color" id="bgColor1" value="#050505">
+                </div>
+                <div class="control-group" id="bgColor2Group" style="display: none;">
+                    <label for="bgColor2">Warna Gradien Kedua</label>
+                    <input type="color" id="bgColor2" value="#1e293b">
+                </div>
+            </div>
+
+            <!-- Controls Upload Gambar -->
+            <div id="bgImageControls" class="control-group" style="display: none;">
+                <label>Pilih Gambar Latar</label>
+                <label class="file-upload-btn">
+                    📁 Klik untuk upload gambar
+                    <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
+                </label>
+                <label for="overlayOpacity" style="margin-top: 8px;">Kegelapan Overlay (<span id="overlayVal">40</span>%)</label>
+                <input type="range" id="overlayOpacity" min="0" max="90" value="40">
+            </div>
+
+            <!-- Tombol Download -->
+            <button class="btn btn-primary" id="downloadBtn" onclick="downloadImage()">
+                💾 Download PNG (Kualitas Tinggi)
+            </button>
+
+        </div>
     </div>
-    <canvas id="canvas" width="540" height="960"></canvas>
+
+    <!-- Hidden Canvas untuk Rendering -->
+    <canvas id="canvas"></canvas>
 
     <script>
-        function debounce(func, wait) {
+        // DOM Elements
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const previewImage = document.getElementById('previewImage');
+
+        const textInput = document.getElementById('textInput');
+        const aspectRatioSelect = document.getElementById('aspectRatio');
+        const fontSelect = document.getElementById('fontSelect');
+        const textAlignSelect = document.getElementById('textAlign');
+        const fontSizeInput = document.getElementById('fontSize');
+        const fontSizeVal = document.getElementById('fontSizeVal');
+        const lineHeightInput = document.getElementById('lineHeight');
+        const lineHeightVal = document.getElementById('lineHeightVal');
+        const textColorInput = document.getElementById('textColor');
+        const textColorHex = document.getElementById('textColorHex');
+        
+        const bgTypeSelect = document.getElementById('bgType');
+        const bgColorControls = document.getElementById('bgColorControls');
+        const bgColor1Input = document.getElementById('bgColor1');
+        const bgColor2Input = document.getElementById('bgColor2');
+        const bgColor2Group = document.getElementById('bgColor2Group');
+        const bgImageControls = document.getElementById('bgImageControls');
+        const bgFileInput = document.getElementById('bgFileInput');
+        const overlayOpacityInput = document.getElementById('overlayOpacity');
+        const overlayVal = document.getElementById('overlayVal');
+
+        let uploadedImage = null;
+
+        // Detect Arabic Characters
+        function isArabic(text) {
+            const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+            return arabicPattern.test(text);
+        }
+
+        // Set Aspect Ratio Canvas
+        function updateCanvasDimensions() {
+            const ratio = aspectRatioSelect.value;
+            switch(ratio) {
+                case '9:16':
+                    canvas.width = 1080;
+                    canvas.height = 1920;
+                    break;
+                case '4:5':
+                    canvas.width = 1080;
+                    canvas.height = 1350;
+                    break;
+                case '1:1':
+                    canvas.width = 1080;
+                    canvas.height = 1080;
+                    break;
+                case '16:9':
+                    canvas.width = 1920;
+                    canvas.height = 1080;
+                    break;
+            }
+        }
+
+        // Multiline Wrapping Function
+        function getWrappedLines(context, text, maxWidth) {
+            const paragraphs = text.split('\n');
+            const lines = [];
+
+            paragraphs.forEach(paragraph => {
+                if (paragraph.trim() === '') {
+                    lines.push('');
+                    return;
+                }
+                const words = paragraph.split(' ');
+                let currentLine = '';
+
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    const testLine = currentLine ? currentLine + ' ' + word : word;
+                    const metrics = context.measureText(testLine);
+                    if (metrics.width > maxWidth && currentLine !== '') {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+            });
+
+            return lines;
+        }
+
+        // Main Render Image Function
+        function renderCanvas() {
+            updateCanvasDimensions();
+            
+            // Clear canvas (Membuatnya transparan secara alami)
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Background (Solid, Gradient, Image, atau Transparan)
+            const bgType = bgTypeSelect.value;
+            if (bgType === 'solid') {
+                ctx.fillStyle = bgColor1Input.value;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (bgType === 'gradient') {
+                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                grad.addColorStop(0, bgColor1Input.value);
+                grad.addColorStop(1, bgColor2Input.value);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (bgType === 'image' && uploadedImage) {
+                const imgRatio = uploadedImage.width / uploadedImage.height;
+                const canvasRatio = canvas.width / canvas.height;
+                let drawWidth, drawHeight, x, y;
+
+                if (imgRatio > canvasRatio) {
+                    drawHeight = canvas.height;
+                    drawWidth = canvas.height * imgRatio;
+                    x = (canvas.width - drawWidth) / 2;
+                    y = 0;
+                } else {
+                    drawWidth = canvas.width;
+                    drawHeight = canvas.width / imgRatio;
+                    x = 0;
+                    y = (canvas.height - drawHeight) / 2;
+                }
+                ctx.drawImage(uploadedImage, x, y, drawWidth, drawHeight);
+
+                // Overlay Gelap
+                const opacity = overlayOpacityInput.value / 100;
+                ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            // Note: Jika 'transparent', canvas dibiarkan kosong tanpa fillRect!
+
+            // 2. Draw Text
+            const rawText = textInput.value || 'Tulis kata-katamu...';
+            const fontSize = parseInt(fontSizeInput.value, 10);
+            const selectedFont = fontSelect.value;
+            const align = textAlignSelect.value;
+            const lHeightRatio = parseFloat(lineHeightInput.value);
+
+            ctx.fillStyle = textColorInput.value;
+            ctx.font = `bold ${fontSize}px ${selectedFont}`;
+            
+            // RTL & Direction Detection
+            const hasArabic = isArabic(rawText);
+            ctx.direction = hasArabic ? 'rtl' : 'ltr';
+
+            // Alignment Positioning
+            let textX = canvas.width / 2;
+            if (align === 'left') {
+                textX = canvas.width * 0.1;
+            } else if (align === 'right') {
+                textX = canvas.width * 0.9;
+            }
+            ctx.textAlign = align;
+            ctx.textBaseline = 'middle';
+
+            // Soft Shadow
+            ctx.shadowColor = 'rgba(0,0,0,0.6)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+
+            // Wrap Text Calculation
+            const padding = canvas.width * 0.15;
+            const maxWidth = canvas.width - (padding * 2);
+            const lines = getWrappedLines(ctx, rawText, maxWidth);
+
+            const lineHeightPx = fontSize * lHeightRatio;
+            const totalTextHeight = (lines.length - 1) * lineHeightPx;
+            const startY = (canvas.height - totalTextHeight) / 2;
+
+            lines.forEach((line, index) => {
+                ctx.fillText(line, textX, startY + (index * lineHeightPx));
+            });
+
+            // Reset Shadow
+            ctx.shadowBlur = 0;
+
+            // Update Preview Image
+            previewImage.src = canvas.toDataURL('image/png');
+        }
+
+        // Debounce Helper
+        function debounce(func, delay = 100) {
             let timeout;
-            return function(...args) {
+            return (...args) => {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
+                timeout = setTimeout(() => func(...args), delay);
             };
         }
 
-        function generateImage() {
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-            const fontSize = document.getElementById('fontSizeSlider').value;
-            context.clearRect(0, 0, canvas.width, canvas.height);
+        const debouncedRender = debounce(renderCanvas, 80);
 
-            const text = document.getElementById('textInput').value;
-            context.fillStyle = '#ffffff';
-            context.font = `bold ${fontSize}px sans-serif`;
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
+        // Event Listeners
+        textInput.addEventListener('input', debouncedRender);
+        aspectRatioSelect.addEventListener('change', renderCanvas);
+        
+        fontSelect.addEventListener('change', () => {
+            document.fonts.ready.then(renderCanvas);
+        });
 
-            const maxWidth = canvas.width - 50;
-            const lineHeight = parseInt(fontSize) + 10;
-            const lines = wrapText(context, text, maxWidth);
+        textAlignSelect.addEventListener('change', renderCanvas);
+        
+        fontSizeInput.addEventListener('input', (e) => {
+            fontSizeVal.textContent = e.target.value;
+            debouncedRender();
+        });
 
-            const yStart = canvas.height / 2 - (lines.length / 2) * lineHeight;
-            lines.forEach((line, i) => {
-                context.fillText(line, canvas.width / 2, yStart + i * lineHeight);
-            });
+        lineHeightInput.addEventListener('input', (e) => {
+            lineHeightVal.textContent = e.target.value;
+            debouncedRender();
+        });
 
-            const preview = document.getElementById('preview');
-            preview.src = canvas.toDataURL('image/png');
-        }
+        textColorInput.addEventListener('input', (e) => {
+            textColorHex.value = e.target.value;
+            debouncedRender();
+        });
 
-        const debouncedGenerateImage = debounce(generateImage, 300);
+        textColorHex.addEventListener('input', (e) => {
+            if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+                textColorInput.value = e.target.value;
+                debouncedRender();
+            }
+        });
 
+        bgTypeSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            bgColorControls.style.display = (val === 'solid' || val === 'gradient') ? 'grid' : 'none';
+            bgColor2Group.style.display = (val === 'gradient') ? 'flex' : 'none';
+            bgImageControls.style.display = (val === 'image') ? 'flex' : 'none';
+            renderCanvas();
+        });
+
+        bgColor1Input.addEventListener('input', debouncedRender);
+        bgColor2Input.addEventListener('input', debouncedRender);
+
+        bgFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.onload = function() {
+                        uploadedImage = img;
+                        renderCanvas();
+                    }
+                    img.src = evt.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        overlayOpacityInput.addEventListener('input', (e) => {
+            overlayVal.textContent = e.target.value;
+            debouncedRender();
+        });
+
+        // Download Image Function
         function downloadImage() {
-            const canvas = document.getElementById('canvas');
             const link = document.createElement('a');
-            link.download = 'Quo [amogenz].png';
-            link.href = canvas.toDataURL('image/png');
+            const timeStamp = new Date().getTime();
+            link.download = `Quote_${timeStamp}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         }
 
-        function wrapText(context, text, maxWidth) {
-            const words = text.split(' ');
-            const lines = [];
-            let line = '';
-
-            for (let i = 0; i < words.length; i++) {
-                const testLine = line + words[i] + ' ';
-                const metrics = context.measureText(testLine);
-                const testWidth = metrics.width;
-                if (testWidth > maxWidth && i > 0) {
-                    lines.push(line);
-                    line = words[i] + ' ';
-                } else {
-                    line = testLine;
-                }
-            }
-            lines.push(line);
-            return lines;
-        }
+        // Initialize App & Wait for Fonts
+        document.fonts.ready.then(() => {
+            renderCanvas();
+        });
     </script>
-
 </body>
 </html>
